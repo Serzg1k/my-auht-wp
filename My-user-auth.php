@@ -82,3 +82,39 @@ class MyUserAuth
 
 
 }
+
+//add endpoint json API /wp-json/myroutes/menu
+function my_get_menu() {    
+    // return wp_get_nav_menu_items(2);
+    return get_users();
+}
+
+add_action( 'rest_api_init', function () {
+        register_rest_route( 'myroutes', '/menu', array(
+        'methods' => 'GET',
+        'callback' => 'my_get_menu',
+        'permission_callback' => function () {
+		return true;
+	}
+    ) );
+} );
+
+// args wp_query for select custom_date_field
+$args = [
+    'post_type' => 'any_post_type',            
+    'meta_query' => [
+    'relation' => 'AND',
+    [
+      'key' => 'custom_date_field_start',
+      'value' => date('Y-m-d H:i:s'),
+      'compare' => '<=',
+      'type' => 'DATE'
+    ],
+    [
+        'key' => 'custom_date_field_finish',
+      'value' => date('Y-m-d H:i:s'),
+      'compare' => '>=',
+      'type' => 'DATE'
+    ],
+  ]
+];
